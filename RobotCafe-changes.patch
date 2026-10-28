@@ -1,0 +1,46 @@
+--- a/CafeRobot/Tasks/Manipulation.cs
++++ b/CafeRobot/Tasks/Manipulation.cs
+@@ -99,6 +99,7 @@
+ 		public float TouchHeight = 0.0015f;             // m: the lowest point of the base counts as down
+ 		public float MaxCreep = 0.03f;                  // m: never press further than this looking for the surface
+ 		public float LooseGrip = 0.15f;                 // grip that lets the cup slide down when the hand lands first
++		public float SlideTime = 0.5f;                  // s over which the fingers loosen to LooseGrip when the hand lands first
+ 		public float ReleaseGrip = 0.12f;               // grip the fingers relax to before opening
+ 		public float ReleaseLoosenTime = 0.5f;          // s to relax them
+ 		public float ReleaseUnhook = 0.02f;             // m the open hand backs off along its fingers
+@@ -221,6 +222,14 @@
+ 		private const float ApproachLane = 0.4f;
+ 
+ 		/// <summary>
++		/// Bodies the reach-corridor check skips. (G1RoomNav addition.) The check treats every collider as a sphere of
++		/// its largest half-size, so a long straight wall counts as in the way of the hand from anywhere in the room.
++		/// The cafe's walls are built from many short pieces; a room with long single-box walls lists them here.
++		/// The floor map (which the stance check uses) still sees them as real obstacles.
++		/// </summary>
++		public static readonly HashSet<int> CorridorIgnoredBodies = new HashSet<int>();
++
++		/// <summary>
+ 		/// Find the surface under a cup and pick the edge to approach it from: the nearest edge for
+ 		/// which the stance, its approach lane and the reach corridor over the surface are all clear.
+ 		/// Both hands are considered; the left is preferred on a tie.
+@@ -369,7 +378,8 @@
+ 			{
+ 				if (!mujoco.GetGeomDescriptor(g, out int body, out _, out _, out int contype, out int conaffinity, out Vector3 size))
+ 					continue;
+-				if (body == cupBody || body == supportBody || (contype == 0 && conaffinity == 0) || robot.IsRobotBody(body))
++				if (body == cupBody || body == supportBody || (contype == 0 && conaffinity == 0) || robot.IsRobotBody(body)
++					|| CorridorIgnoredBodies.Contains(body))
+ 					continue;
+ 				if (!mujoco.GetGeomPoseMj(g, out Vector3 p, out _))
+ 					continue;
+--- a/CafeRobot/Tasks/CupHandling.cs
++++ b/CafeRobot/Tasks/CupHandling.cs
+@@ -512,7 +512,7 @@
+ 							if (!landed)
+ 							{
+ 								Log.Info($"[CafeRobot] {Name}: the hand reached the surface with the cup {cupHeight * 1000f:F0} mm above it; letting it slide down");
+-								m_Hand.GripRate = Math.Max(0.05f, (m_Hand.Grip - m_Tuning.LooseGrip) / 0.5f);
++								m_Hand.GripRate = Math.Max(0.05f, (m_Hand.Grip - m_Tuning.LooseGrip) / Math.Max(0.02f, m_Tuning.SlideTime));
+ 								m_Hand.Command(m_Tuning.LooseGrip, m_Hand.ThumbSwing, 0f);
+ 							}
+ 							Enter(landed ? Phase.Hold : Phase.Slide);
