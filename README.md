@@ -68,7 +68,7 @@ include Lucky Robots' RobotCafe material, which the scene and `TidyWaiter` depen
 1. Install the RobotCafe example from the Lucky Engine Content Vault.
 2. Clone this repository next to it, in a folder named `G1RoomNav` (so you have `<parent>\RobotCafe` and `<parent>\G1RoomNav`).
 3. Run `Tools\Setup-FromRobotCafe.ps1` (add `-RobotCafe <path>` if RobotCafe is somewhere else). It copies the three parts above
-   and applies the patch; it stops with a message if RobotCafe is missing, and can be run twice safely.
+   and applies the patch; it stops with a message if RobotCafe is missing, and can be run again safely.
 4. Open `G1RoomNav.hproj` in Lucky Engine and let it build the scripts.
 
 Notes:

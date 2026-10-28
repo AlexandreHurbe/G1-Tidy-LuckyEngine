@@ -4,7 +4,7 @@
 #   Tools\Setup-FromRobotCafe.ps1 -RobotCafe D:\path\to\RobotCafe
 #
 # RobotCafe is Lucky Robots' example project; install it from the Lucky Engine Content Vault first. Nothing from it is in this
-# repository. Safe to run twice: files are re-copied and the patch is skipped if it is already applied.
+# repository. Safe to run twice: the files are copied again (which undoes the patch) and the patch is re-applied.
 # Does NOT touch Assets\Scenes\Tidy.hscene (do not run make_tidy_base.py either: it overwrites that scene).
 param([string]$RobotCafe)
 
