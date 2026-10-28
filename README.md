@@ -58,10 +58,14 @@ scene and `TidyWaiter` depend on. To rebuild:
 
 1. Put this folder next to a copy of the RobotCafe project, and name it `G1RoomNav` (the tools expect `<parent>/RobotCafe` and `<parent>/G1RoomNav`).
 2. Copy `RobotCafe/Assets/Scripts/Client/Source/CafeRobot/` into `Assets/Scripts/Client/Source/CafeRobot/` (leave out `Cinematics/`),
-   and apply `RobotCafe-changes.patch` to it.
-3. Copy `RobotCafe/Assets/Robots/UnitreeG1` and `RobotCafe/Assets/Cafe` into `Assets/`. `Tools/make_tidy_base.py` does this and
-   rewrites the base scene; the checked-in `Assets/Scenes/Tidy.hscene` is the finished result and refers to those assets.
+   then apply the patch from this folder's root: `git apply --directory=Assets/Scripts/Client/Source RobotCafe-changes.patch`.
+3. Copy `RobotCafe/Assets/Robots/UnitreeG1` and `RobotCafe/Assets/Cafe` into `Assets/`. The checked-in `Assets/Scenes/Tidy.hscene`
+   is the finished scene and refers to those assets. **Do not run `Tools/make_tidy_base.py` for this**: it is the first step of
+   building the scene from scratch and overwrites `Tidy.hscene` with a bare base scene.
 4. Open `G1RoomNav.hproj` in Lucky Engine and let it build the scripts.
+
+Checked this way from a fresh clone: the scripts build without errors, the scene opens, and `Tools\Run-TidyTest.ps1 -Episodes 1 -Seed 101 -NoRecord`
+plays an episode to the end (1 of 3 cups delivered, the other two fell over on release, as in the recorded run's first episode).
 
 ## Run it
 
