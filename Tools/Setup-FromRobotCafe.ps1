@@ -33,10 +33,11 @@ foreach ($p in $parts) {
 }
 
 Push-Location $root
+$ErrorActionPreference = 'Continue'    # git writes its normal "does not apply" message to stderr; Windows PowerShell 5.1 would treat that as fatal
 try {
     $patch = 'RobotCafe-changes.patch'
     $apply = @('--directory=Assets/Scripts/Client/Source', '--whitespace=nowarn')
-    git apply @apply --reverse --check $patch 2>$null
+    git apply @apply --reverse --check $patch *> $null
     if ($LASTEXITCODE -eq 0) { Write-Host 'patch already applied' }
     else {
         git apply @apply $patch
