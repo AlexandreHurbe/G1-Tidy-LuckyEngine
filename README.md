@@ -53,20 +53,33 @@ in the current room is a small sample, so I would not read the 7 / 9 as a rate.
 ## Using this repository
 
 This holds my work only: the scene, the episode and randomisation code, the build tools, the patch and this README. It does not
-include Lucky Robots' RobotCafe assets (the G1 robot, the cafe props and their textures) or the cafe controller source, which the
-scene and `TidyWaiter` depend on. To rebuild:
+include Lucky Robots' RobotCafe material, which the scene and `TidyWaiter` depend on and which I have not redistributed.
 
-1. Put this folder next to a copy of the RobotCafe project, and name it `G1RoomNav` (the tools expect `<parent>/RobotCafe` and `<parent>/G1RoomNav`).
-2. Copy `RobotCafe/Assets/Scripts/Client/Source/CafeRobot/` into `Assets/Scripts/Client/Source/CafeRobot/` (leave out `Cinematics/`),
-   then apply the patch from this folder's root: `git apply --directory=Assets/Scripts/Client/Source RobotCafe-changes.patch`.
-3. Copy `RobotCafe/Assets/Robots/UnitreeG1` and `RobotCafe/Assets/Cafe` into `Assets/`. The checked-in `Assets/Scenes/Tidy.hscene`
-   is the finished scene and refers to those assets. **Do not run `Tools/make_tidy_base.py` for this**: it is the first step of
-   building the scene from scratch and overwrites `Tidy.hscene` with a bare base scene.
+**What is needed from RobotCafe**
+
+| Part | Size | Used for |
+|---|---|---|
+| `Assets/Robots/UnitreeG1` | 28 MB | The G1 with Inspire hands |
+| `Assets/Cafe` | 59 MB | Counter, table, chairs, cups and their textures |
+| `Assets/Scripts/Client/Source/CafeRobot` (without `Cinematics/`) | 0.2 MB | The walk and pick-and-place controller, plus `RobotCafe-changes.patch` |
+
+**Setup**
+
+1. Install the RobotCafe example from the Lucky Engine Content Vault.
+2. Clone this repository next to it, in a folder named `G1RoomNav` (so you have `<parent>\RobotCafe` and `<parent>\G1RoomNav`).
+3. Run `Tools\Setup-FromRobotCafe.ps1` (add `-RobotCafe <path>` if RobotCafe is somewhere else). It copies the three parts above
+   and applies the patch; it stops with a message if RobotCafe is missing, and can be run twice safely.
 4. Open `G1RoomNav.hproj` in Lucky Engine and let it build the scripts.
 
-Checked this way from a fresh clone: the scripts build without errors, the scene opens, and `Tools\Run-TidyTest.ps1 -Episodes 1 -Seed 101 -NoRecord`
-plays an episode to the end (1 of 3 cups delivered, the other two fell over on release, as in the recorded run's first episode).
-
+Notes:
+- The checked-in `Assets/Scenes/Tidy.hscene` is the finished scene and refers to those assets. **Do not run
+  `Tools/make_tidy_base.py`**: it is the first step of building the scene from scratch and overwrites `Tidy.hscene` with a bare base scene.
+- The patch was made against the RobotCafe downloaded with Lucky Engine 2026.3 (October 2026). If a different RobotCafe version changes `Manipulation.cs` or
+  `CupHandling.cs`, the setup script stops at the patch step.
+- The same steps done by hand (copy the folders, then `git apply --directory=Assets/Scripts/Client/Source RobotCafe-changes.patch`)
+  were checked from a fresh clone: the scripts build without errors, the scene opens, and
+  `Tools\Run-TidyTest.ps1 -Episodes 1 -Seed 101 -NoRecord` plays an episode to the end (1 of 3 cups delivered, the other two fell
+  over on release, as in the recorded run's first episode).
 ## Run it
 
 1. Open `G1RoomNav.hproj` in Lucky Engine, scene `Tidy`.
